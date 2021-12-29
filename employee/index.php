@@ -116,17 +116,18 @@
                             <td><?php echo $row['vehicle_no']; ?></td>
                             <td><?php echo $row['work_name']; ?></td>
                             <td><?php echo $row['start_date']; ?></td>
-                            <td><?php echo $row['end_date']; ?></td>
+                            <td><?php echo $row['end_date']; ?>
+                            <input type="hidden" value='<?php echo $row['amount'];?>' id="<?php echo $row['vehicle_no']; ?>"></td>
+                            <td><?php echo $row['amount'];   ?></td>
                             <td>
-                              <button class="btn btn-primary">Edit</button></td>
-                            <td>
-                              
-                              <input type="text" name="" class="close_id" data-close_id="<?php echo $row['id']; ?>" value="<?php echo $row['id']; ?>">
-                              
-                              <button id="modal_close" class="btn btn-danger modal_close">Close</button>
+                              <button class="btn btn-primary">Edit</button>
                             </td>
                             <td>
-                              <button class="btn btn-success">Archive</button></td>
+                              <button class="btn btn-danger">Close</button>
+                            </td>
+                            <td>
+                              <button type="button" class="btn btn-primary" data-toggle="modal" onclick="archieveDate('<?php echo $row['vehicle_no']; ?>')">Archive</button>
+                            </td>
                           </tr>
                         <?php 
                       }
@@ -141,8 +142,28 @@
         </div>
       </div>
 
+<!--===================== archieve modal ===========================-->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Archieve Date</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h1>Hello there</h1>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-<!---Add New Work Item Modal -->
+<!---===========================Add New Work Item Modal ===========================-->
 <div class="modal fade bd-example-modal-lg" id="add_new_work_item" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -211,7 +232,7 @@
                       if($query->num_rows > 0){
                         while($row = $query->fetch_assoc()){
                           ?>
-                            <option value="<?php echo $row['id'],"|", $row['count'],"|", $row['format']; ?>">
+                            <option value="<?php echo $row['id'],"|", $row['count'],"|", $row['format'],"|", $row['due_days']; ?>">
                                         <?php echo $row['work_name'], $row['count'];
                                         ?> days</option>
                               <script>

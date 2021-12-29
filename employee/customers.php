@@ -277,9 +277,6 @@
         });
       $('#edit_customer').modal('show');
       });
-   
-   
-
     });
 
    function deleteFunction(id){
@@ -287,8 +284,6 @@
     $('#customer_delete_id').val(id);
   //  alert(id);
    }
-
-
 </script>
 
 

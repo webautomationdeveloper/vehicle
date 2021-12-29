@@ -15,10 +15,8 @@
 		header('location:customers.php');
 	}
 
-
 	//==================New Customer Register=======================
 		if(isset($_POST['customer_register'])){
-
 			$name = $_POST['name'];
 			$email = $_POST['email'];
 			$phon = $_POST['phon'];
@@ -35,11 +33,9 @@
 			if($conn->affected_rows){
 				header('location:customers.php');
 			}
-		
 		}
 
 //==========================Add New Vehicle (Vehicle Page)============================
-
 	if(isset($_POST['vehicle'])){
 		$customer_id = $_POST['cus_id'];
 		$date = date('Y-m-d');
@@ -54,41 +50,22 @@
 	}
 
 	//============================= ----Work Order (Index page)---- ===========================
-
 	if(isset($_POST['work_order'])){
 		$customer_id = $_POST['c_id'];
 		$vehicle_id = $_POST['v_id'];
 		$work = (explode("|",$_POST['work']));;
 		$emp_id = $_SESSION['emp_id'];
 		$start_date = $_POST['start_date'];
-		$update_date = $_POST['update_date'];
+		$end_date = $_POST['update_date'];
 		$updated_date = date('Y-m-d');
-
-		$sqla = "INSERT INTO work_orders(customers_id, vehicle_info_id, work_type_id, emp_id, start_date, end_date, updated_date) VALUES($customer_id, $vehicle_id, $work[0], $emp_id, '$start_date', '$update_date','$updated_date')";
-
+	
+		$due_date = date('Y-m-d', strtotime( -$work[3].' day', strtotime($end_date)));
+		
+		$sqla = "INSERT INTO work_orders(customers_id, vehicle_info_id, work_type_id, emp_id, start_date, end_date, updated_date,amount) 
+								  VALUES($customer_id, $vehicle_id, $work[0], $emp_id, '$start_date', '$end_date','$updated_date','$due_date')";
 			$conn->query($sqla);
 			header('location:index.php');
 	}
-
-
-		/*if(isset($_POST['work_order'])){
-			$customer_id = $_POST['c_id'];
-			$vehicle_id = $_POST['v_id'];
-			$update_date = date('Y-m-d');
-			$emp_id = $_SESSION['emp_id'];
-			$start_date = $_POST['start_date'];
-		//	$amount = $_POST['amount'];
-		//	$comunt = $_POST['any_comment'];
-			$work = (explode("|",$_POST['work']));;
-			$setdate = $_POST['setdate'];
-
-			$sqla = "INSERT INTO work_orders(customers_id, vehicle_info_id, work_type_id, emp_id, start_date,  updated_date, end_date) VALUES($customer_id, $vehicle_id, $work[0], $emp_id, '$start_date', '$update_date','$setdate')";
-		
-			$conn->query($sqla);
-			header('location:index.php');
-				}
-			}
-		}*/
 
 //======================Show Exsits Customer Details=========================
 if(isset($_POST['name'])){
