@@ -1,7 +1,7 @@
 <?php
 	session_start();
 	
-	$conn = new mysqli('localhost', 'root', 'redhat','vehicle');
+	$conn = new mysqli('localhost', 'root', 'webastral','vehicle');
 
 	class database{
 		private	$host ;
@@ -12,7 +12,7 @@
 		function connect(){
 			$this->host = 'localhost';
 			$this->user  = 'root';
-			$this->password = 'redhat';
+			$this->password = 'webastral';
 			$this->database = 'vehicle'; 
 
 			$con = new mysqli($this->host, $this->user, $this->password, $this->database);

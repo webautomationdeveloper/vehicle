@@ -100,10 +100,13 @@
                 <tbody>
                   <?php 
 
-                    $sql = "SELECT work_orders.start_date, work_orders.end_date, customers.name, customers.email, vehicle_info.vehicle_no, vehicle_info.vehicle_type_id, work_type.work_name FROM work_orders 
+                    $sql = "SELECT work_orders.start_date, work_orders.end_date, work_orders.amount,
+                                    customers.name, 
+                                    customers.email, 
+                                    vehicle_info.vehicle_no, vehicle_info.vehicle_type_id, work_type.work_name FROM work_orders 
                       JOIN customers ON work_orders.customers_id = customers.id 
                       JOIN vehicle_info ON work_orders.vehicle_info_id = vehicle_info.id 
-                      JOIN work_type ON work_orders.work_type_id = work_type.id";
+                      JOIN work_type ON work_orders.work_type_id = work_type.id ORDER BY amount ASC;";
 
                     $query = $conn->query($sql);
                     if($query->num_rows>0){
@@ -116,10 +119,12 @@
                             <td><?php echo $row['vehicle_no']; ?></td>
                             <td><?php echo $row['work_name']; ?></td>
                             <td><?php echo $row['start_date']; ?></td>
-                            <td><?php echo $row['end_date']; ?></td>
+                            <td><?php echo $row['end_date']; ?>
+                            <input type="hidden" value='<?php echo $row['amount'];?>' id="<?php echo $row['vehicle_no']; ?>"></td>
+                            <td><?php echo $row['amount'];   ?></td>
                             <td><button class="btn btn-primary">Edit</button></td>
                             <td><button class="btn btn-danger">Close</button></td>
-                            <td><button class="btn btn-success">Archive</button></td>
+                            <td><button type="button" class="btn btn-primary" data-toggle="modal" onclick="archieveDate('<?php echo $row['vehicle_no']; ?>')">Archive</button></td>
                           </tr>
                         <?php 
                       }
@@ -133,7 +138,26 @@
           </div>
         </div>
       </div>
-
+<!-- archieve modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Archieve Date</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h1>Hello there</h1>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!---Add New Work Item Modal -->
 <div class="modal fade bd-example-modal-lg" id="add_new_work_item" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -187,52 +211,9 @@
                 </tr>
               </tbody>
             </table>
-            <div>
-              <p style="margin-bottom:-31px;font-weight: bold;">Vehicle</p><hr>
-            </div>
-
-            <div class="row" id="vehicle_div">
-             <!--  <div class="col-md-6">
-                <div class="form-group">
-                  <label for="v_id">Vehicle Id</label>
-                  <input type="text" class="form-control" name="vehicle_id" id="v_id">
-                </div>
-              </div> -->
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="vn">Vehicle Number</label>
-                  <input type="text" class="form-control" name="vehicle_number" id="vehicle_number" required>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="vehicle">Vehicle</label>
-                  <select class="form-control" id="vehicle" name="vehiclew" required>
-
-                  <?php 
-                    class vehicle extends database{
-                      function sel(){
-                        $sql = "SELECT * FROM vehicle_type";
-                        $query = $this->connect()->query($sql);
-                        if($query->num_rows > 0){
-                          while($row = $query->fetch_assoc()){
-                            ?>
-                            <option value="<?php echo $row['id']; ?>"><?php echo $row['vehicle_name']; ?></option><?php 
-                          }
-                        }else{
-                          echo 'else';
-                        }
-                      }
-                    }
-                    $sel = new vehicle();
-                    $sel->sel();
-                  ?>
-                  </select>
-                  
-                </div>
-              </div>
-              
-            </div>
+            customer Id
+            <input type="text" name="c_id" id="c_id" value="">
+            <input type="text" name="v_id" id="v_id" value="">
             <div>
               <p style="margin-bottom:-31px;font-weight: bold;">Work</p><hr>
             </div>
@@ -247,8 +228,8 @@
                       if($query->num_rows > 0){
                         while($row = $query->fetch_assoc()){
                           ?>
-                            <option value="<?php echo $row['id'],"|", $row['count'],"|", $row['format']; ?>">
-                                        <?php echo $row['work_name'], $row['count'];
+                            <option value="<?php echo $row['id'],"|", $row['count'],"|", $row['format'],"|", $row['due_days']; ?>">
+                                        <?php echo $row['work_name'], $row['count'], $row['due_days'];
                                         ?> days</option>
                               <script>
                                 let count ="<?php echo $row['count'];?>";
@@ -286,10 +267,11 @@
 
                     $('#sdate').change(function(){
                       let date = $('#sdate').val();
+
                       // $("#setdate").append(date);
                       let workVal = ($("#work").val());
                       workVal = workVal.split("|");
-            
+                      console.log(workVal);
                         
                       switch(workVal[2]){
                         case "0":
@@ -309,7 +291,9 @@
                         let newDate = date1.toISOString().split('T')[0];
                         // $("#setdate").innerHTML("");
                         //$("#setdate").append(newDate);
-                       $("#setdatea").val(newDate);
+                        console.log(newDate);
+                        document.querySelector("#setdatea").value = newDate;
+                       // $("#setdatea").val(newDate);
                       
 
                     })
@@ -320,13 +304,7 @@
               <div class="col-md-3">
                 <div class="form-group">
                   <label for="setdatea">Expiry</label>
-                 <input type="date" class="form-control" id="setdatea" value="" name="setdatea">
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="amount">Amount</label>
-                  <input type="number" class="form-control" name="amount" id="amount">
+                 <input type="date" class="form-control" id="setdatea" value="" name="update_date">
                 </div>
               </div>
               <div class="col-md-6">
@@ -361,40 +339,39 @@
         type  :'POST',
         data  :{name:name},
         success:function(data){
+          $('.for_exists_customer_hide').show();
           $('.exsits_customer').html(data); 
         }
       });
-     
+
      if($('#search_name').val() == ''){
-      $('.for_exists_customer_hide').show();
+      $('.for_exists_customer_hide').hide();
      }
     });
   });
 
 
   function setCustomerDetails(id){
-
     cdetail = (document.getElementById(("td"+id).toString()).innerText).split("|");
  //   console.log(cdetail[9]); 
 
-$datajj = cdetail[10];
-
-    $("#c_id").val(id);
     $("#name").text(cdetail[0]);
     $("#email").text(cdetail[1]);
     $("#phone").text(cdetail[2]);
     $("#address").text(cdetail[3]);
     $("#city").text(cdetail[4]+'/'+cdetail[5]);
     $("#vehicle_number").text(cdetail[9]);
-    alert(query_vehicle
-      );
-
-
-    $('.for_exists_customer_hide').show();
-    $('.for_exists_customer_show').hide();  
-
+    $('#c_id').val(cdetail[11]);
+    $('#v_id').val(cdetail[12]);
+    $('.exsits_customer').hide();
   }
 
+
+function 	archieveDate(id){
+  let dueDate = document.getElementById(id).value;
+  console.log(dueDate);
+  
+}
 </script>
 
 

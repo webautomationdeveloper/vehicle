@@ -44,54 +44,55 @@
 	//============================= ----Work Order (Index page)---- ===========================
 
 	if(isset($_POST['work_order'])){
-			
-		$name = $_POST['name'];
-		$email = $_POST['email'];
-		$phon = $_POST['phon'];
-		$address = $_POST['address'];
-		$city = $_POST['city'];
-		$district = $_POST['district'];
-		$state = $_POST['state'];
-		$country = $_POST['country'];
-		$zip = $_POST['zip'];
-		$date = date('Y-m-d');
-		$vehicle = $_POST['vehiclew'];
-		$vehicle_no = $_POST['vehicle_number'];
-	
-		if(!isset($customer_id) || trim($customer_id) == ''){
-			$sql = "INSERT INTO customers(name, email, phon, address, city, district, state, country, zip, join_date) VALUES ('$name', '$email', '$phon', '$address', '$city', '$district', '$state', '$country', $zip, '$date')";
-		}else {
-			$last = trim($customer_id);
-		}		
-		
-		if($conn->query($sql)){
-			$last = $conn->insert_id;
+		$customer_id = $_POST['c_id'];
+		$vehicle_id = $_POST['v_id'];
+		$work = (explode("|",$_POST['work']));;
+		$emp_id = $_SESSION['emp_id'];
+		$start_date = $_POST['start_date'];
+		$end_date = $_POST['update_date'];
+		$updated_date = date('Y-m-d');
 
-			$salv = "INSERT INTO vehicle_info(customer_id, vehicle_type_id, vehicle_no) VALUES ($last, $vehicle, '$vehicle_no')";
+		$due_date=date('Y-m-d', strtotime( -$work[3].' day', strtotime($end_date)));
 
-			if($conn->query($salv)){
-				$vehicle_info_id = mysqli_insert_id($conn);
-				$emp_id = $_SESSION['emp_id'];
-				$start_date = $_POST['start_date'];
-				$amount = $_POST['amount'];
-				$comunt = $_POST['any_comment'];
-				$work = (explode("|",$_POST['work']));;
-				$setdate = $_POST['setdate'];
+		$sqla = "INSERT INTO work_orders(customers_id, vehicle_info_id, work_type_id, emp_id, start_date, end_date, updated_date,amount) 
+								  VALUES($customer_id, $vehicle_id, $work[0], $emp_id, '$start_date', '$end_date','$updated_date','$due_date')";
 
-				$sqla = "INSERT INTO work_orders(customers_id, vehicle_info_id, work_type_id, emp_id, start_date, amount, any_comment, updated_date, end_date) VALUES($last, $vehicle_info_id, $work[0], $emp_id, '$start_date',$amount, '$comunt', '$date','$setdate')";
-			
-				$conn->query($sqla);
-				header('location:index.php');
-			}
-		}
+			$conn->query($sqla);
+			header('location:index.php');
 	}
+
+
+		/*if(isset($_POST['work_order'])){
+			$customer_id = $_POST['c_id'];
+			$vehicle_id = $_POST['v_id'];
+			$update_date = date('Y-m-d');
+			$emp_id = $_SESSION['emp_id'];
+			$start_date = $_POST['start_date'];
+		//	$amount = $_POST['amount'];
+		//	$comunt = $_POST['any_comment'];
+			$work = (explode("|",$_POST['work']));;
+			$setdate = $_POST['setdate'];
+
+			$sqla = "INSERT INTO work_orders(customers_id, vehicle_info_id, work_type_id, emp_id, start_date,  updated_date, end_date) VALUES($customer_id, $vehicle_id, $work[0], $emp_id, '$start_date', '$update_date','$setdate')";
+		
+			$conn->query($sqla);
+			header('location:index.php');
+				}
+			}
+		}*/
 
 //======================Show Exsits Customer Details=========================
 if(isset($_POST['name'])){
 	$name = trim($_POST['name']);
-	$vehicle_type_id = $row['vehicle_type_id'];
-
-	$exsits = "SELECT *, vehicle_info.vehicle_no, vehicle_info.id AS vehicle_id, vehicle_info.vehicle_type_id FROM customers JOIN vehicle_info ON customers.id =  vehicle_info.customer_id WHERE (customers.name = '$name' OR vehicle_info.vehicle_no = '$name') AND vehicle_info.vehicle_no != ''";
+	
+	$exsits = "SELECT *, 
+				vehicle_info.vehicle_no, 
+				vehicle_info.customer_id,
+				vehicle_info.id AS vehicle_id, 
+				vehicle_info.vehicle_type_id 
+				FROM customers 
+				JOIN vehicle_info ON customers.id =  vehicle_info.customer_id 
+				WHERE (customers.name = '$name' OR vehicle_info.vehicle_no = '$name') AND vehicle_info.vehicle_no != ''";
 	$query2 = $conn->query($exsits);
 	if($query2->num_rows>0){
 		?>
@@ -102,7 +103,9 @@ if(isset($_POST['name'])){
 			?>
 			<tr>
 				<td>
-					<?php echo $row["name"];?>, 
+					<?php echo $row["vehicle_id"];?>, 
+					<?php echo $row["customer_id"];?>,
+					<?php echo $row["name"];?>,
 					<?php echo $row["email"];?>,
 					<?php echo $row["phon"];?>,
 					<?php echo $row["address"];?>,
@@ -110,7 +113,7 @@ if(isset($_POST['name'])){
 					<?php echo $row["state"];?>,
 					<?php echo $row['vehicle_no'];?>
 
-					<span id="td<?php echo $row['id']; ?>" style="display: none;"><?php echo $row["name"];?>|<?php echo $row["email"] ?>|<?php echo $row["phon"]?>|<?php echo $row['address']; ?>|<?php echo $row['city']; ?>|<?php echo $row['district']; ?>|<?php echo $row['state']; ?>|<?php echo $row['country']; ?>|<?php echo $row['zip']; ?>|<?php echo $row['vehicle_no']; ?>|<?php echo $row['vehicle_type_id']; ?></span>
+					<span id="td<?php echo $row['id']; ?>" style="display: none;"><?php echo $row["name"];?>|<?php echo $row["email"] ?>|<?php echo $row["phon"]?>|<?php echo $row['address']; ?>|<?php echo $row['city']; ?>|<?php echo $row['district']; ?>|<?php echo $row['state']; ?>|<?php echo $row['country']; ?>|<?php echo $row['zip']; ?>|<?php echo $row['vehicle_no']; ?>|<?php echo $row['vehicle_id']; ?>|<?php echo $row['id']; ?>|<?php echo $row['customer_id']; ?></span>
 				</td>
 				<td>	
 					<span class="btn btn-primary" onclick="setCustomerDetails(
@@ -223,14 +226,24 @@ if(isset($_POST['name'])){
 <!-- ====================Edit Customer Script ===================== -->
 	<script type="text/javascript">
 		$('#customer_edit_button_sdfsfsdfsdf').click(function(){
-			alert($('.ce_name').val());
-			alert($('.ce_email').val());
-			alert($('.ce_phon').val());
-			alert($('.ce_address').val());
-			alert($('.ce_city').val());
-			alert($('.ce_district').val());
-        	alert($('.ce_state').val());
-        	alert($('.ce_zip_update').val());
+			var name = ($('.ce_name').val());
+			var email = ($('.ce_email').val());
+			var phon = ($('.ce_phon').val());
+			var address = ($('.ce_address').val());
+			var city = ($('.ce_city').val());
+			var district = ($('.ce_district').val());
+        	var state = ($('.ce_state').val());
+        	var zip = ($('.ce_zip_update').val());
+        	var id = ($('#customer_edit_id').val());
+      	
+        	$.ajax({
+        		url 	: 'helper.php',
+        		type 	: 'POST',
+        		data 	:{updateid:id, name:name, email:email, phon:phon, address:address, city:city, district:district, state:state, zip:zip},
+        		success:function(data){
+        			$('#emp_custmoer_edit').modal('hide');
+        		}
+        	});
       	});
 	</script>
 <!-- ====================End Edit Customer Script ===================== -->
@@ -245,4 +258,20 @@ if(isset($_POST['name'])){
 	}
 
 	//===========================Update Customer By Ajax==========================
+
+	if(isset($_POST['updateid'])){
+		$id = $_POST['updateid'];
+		$name = $_POST['name'];
+		$email = $_POST['email'];
+		$phon = $_POST['phon'];
+		$address = $_POST['address'];
+		$city = $_POST['city'];
+		$district = $_POST['district'];
+        $state = $_POST['state'];
+        $zip = $_POST['zip'];
+        $customer_update = "UPDATE customers SET name = '$name', email = '$email', phon = '$phon', address ='$address', city = '$city', district = '$district', state ='$state', zip=$zip WHERE id = $id";
+        $c_update_query = $conn->$customer_update;
+	}
+
+
 ?>

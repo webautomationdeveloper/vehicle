@@ -70,9 +70,10 @@
                       <td>
                         <button type="button" class="btn btn-primary edit-profile" data-eid="<?php echo $row['id'];?>" id="emp_custmoer_edit">Edit</button>
                       </td>
-
                       <td>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#emp_customer_delete">Delete</button>
+                        <input type="text" name="" data-cus_delete_id="<?php echo $row['id'];?>" value="<?php echo $row['id']; ?>">
+                      
+                        <button type="button" class="btn btn-danger delete_modal" id="delete_modal">Delete</button>
                       </td>
                   </tr>
               <?php 
@@ -80,9 +81,6 @@
                     }else{
                       echo 'data not found';
                     }
-                  
-
-              
               ?>
                   </tbody>
                 </table>
@@ -90,6 +88,28 @@
           </div>
         </div>
       </div>
+
+
+ <!-------------=====================Delete Custmoer=====================------------->
+<div class="modal fade" id="#delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-------------=====================Edit Custmoer=====================------------->
 <div class="modal fade bd-example-modal-lg-view" id="view_customer" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -212,6 +232,7 @@
   </div>
 
     <?php include('footer.php'); ?>
+
 <script type="text/javascript">
    $(document).ready(function(){
       $('.edit-profile').click(function(){
@@ -227,7 +248,14 @@
         });
       $('#edit_customer').modal('show');
       });
+   
+      $('#delete_modal').click(function(){
+        alert('heelo');
+      });
+
     });
+
+
 </script>
 
 
