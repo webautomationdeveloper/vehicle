@@ -6,16 +6,16 @@
     $query_vehicle =dictonary($conn->query($vehicle));
     
     //print_r($query_vehicle);
-    
+
     function dictonary($response){
       $result = array();
-      foreach ($response as $row)
-    {
-      $id = $row['id'];
-      unset($row['id']);
-      $result[$id] = $row['vehicle_name'];
+  
+      foreach ($response as $row){  
+        $id = $row['id'];
+        unset($row['id']);
+        $result[$id] = $row['vehicle_name'];
       }
-      return $result;
+        return $result;
       }
 
      
@@ -27,9 +27,14 @@
          
           <!-- Card stats -->
           <div class="row">
-          <?php foreach ($query_vehicle  as $key => $value) {
+          <?php 
+              $work = "SELECT * from work_type";
+              $work_vehicle =($conn->query($work));
+
+          foreach ($work_vehicle  as $row1) {
+            $id = $row1['id'];
             $due_date = date('Y-m-d', strtotime('0 days'));
-            $orders = "SELECT * from work_orders WHERE work_type_id = $key AND work_orders.end_date = '$due_date'";
+            $orders = "SELECT * from work_orders WHERE work_type_id = '$id' AND work_orders.end_date = '$due_date'";
           $query_vorders = mysqli_num_rows($conn->query($orders));         
   ?>
 
@@ -39,9 +44,9 @@
                 <div class="card-body">
                   <div class="row">
 
-                      <a target="_blank" href="due_service.php?wtype=<?php echo $key.'&days=0' ?>">
+                      <a target="_blank" href="due_service.php?wtype=<?php echo $id.'&days=0' ?>">
                     <div class="col">
-                      <h5 class="card-title text-uppercase text-muted mb-0"><?php echo $value; ?></h5>
+                      <h5 class="card-title text-uppercase text-muted mb-0"><?php echo $row1['work_name']; ?></h5>
                       <span class="h2 font-weight-bold mb-0"><?php echo ($query_vorders); ?></span>
                     </div>
                       </a>
@@ -87,12 +92,19 @@
                     <th >Work </th>
                     <th >Start Date</th>
                     <th >End Date</th>
-                    <th colspan="3">Action</th>
+                    <th >Edit</th>
+                    <th >Close</th>
+                    <th >Delete</th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php 
-                    $sql = "SELECT work_orders.start_date, work_orders.end_date, customers.name, customers.email, vehicle_info.vehicle_no, vehicle_info.vehicle_type_id, work_type.work_name  FROM work_orders JOIN customers ON work_orders.customers_id = customers.id JOIN vehicle_info ON work_orders.vehicle_info_id = vehicle_info.id JOIN work_type ON work_orders.work_type_id = work_type.id";
+
+                    $sql = "SELECT work_orders.start_date, work_orders.end_date, customers.name, customers.email, vehicle_info.vehicle_no, vehicle_info.vehicle_type_id, work_type.work_name FROM work_orders 
+                      JOIN customers ON work_orders.customers_id = customers.id 
+                      JOIN vehicle_info ON work_orders.vehicle_info_id = vehicle_info.id 
+                      JOIN work_type ON work_orders.work_type_id = work_type.id";
+
                     $query = $conn->query($sql);
                     if($query->num_rows>0){
                       while($row = $query->fetch_assoc()){
@@ -105,7 +117,7 @@
                             <td><?php echo $row['work_name']; ?></td>
                             <td><?php echo $row['start_date']; ?></td>
                             <td><?php echo $row['end_date']; ?></td>
-                            <td><button class="btn btn-primary">VIew</button></td>
+                            <td><button class="btn btn-primary">Edit</button></td>
                             <td><button class="btn btn-danger">Close</button></td>
                             <td><button class="btn btn-success">Archive</button></td>
                           </tr>
@@ -136,80 +148,60 @@
         <form method="POST" action="helper.php">
           <div class="modal-body">
             <div>
-              <p style="margin-bottom:-31px;font-weight: bold;">Customer</p><hr>
-            </div>
+              <p style="margin-bottom:-31px;font-weight: bold;">Customer / Vehicle</p>
 
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="c_id">Customer id</label>
-                  <input type="text" class="form-control" name="customer_id" id="c_id">
+              <div style="margin-left: 50%;">   
+                <div class="input-group">
+                  <div class="form-outline">
+                    <input type="search" name="" class="form-control" placeholder="Search Customer" id="search_name">
+                  </div>
                 </div>
               </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="c_name">Costmer Name</label>
-                  <input type="text" class="form-control" name="name" id="find_name" required>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="email">Email</label>
-                  <input type="email" class="form-control" name="email" id="email" required>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="phone">Phone</label>
-                  <input type="number" class="form-control" name="phon" id="phone" required>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="address">Address</label>
-                  <input type="text" class="form-control" name="address" id="address" required>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="city">City</label>
-                  <input type="text" class="form-control" name="city" id="city" required>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="distic">Distic</label>
-                  <input type="text" class="form-control" name="district" id="district" required>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="state">State</label>
-                  <input type="text" class="form-control" name="state" id="state" required>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="country">Country</label>
-                  <input type="text" class="form-control" name="country" id="country" required>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="zip">Zip Code</label>
-                  <input type="number" class="form-control" name="zip" id="zip" required>
-                </div>
-              </div>
+              <hr>
             </div>
+           
+            <div class="for_exists_customer_show" style="display:none;">
+              <table class="exsits_customer table">
+                      
+              </table>  
+            </div>
+            <table class="table for_exists_customer_hide" style="display:none;">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Address</th>
+                  <th>City</th>
+                  <th>Vehicle</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td id="name"></td>
+                  <td id="email"></td>
+                  <td id="phone"></td>
+                  <td id="address"></td>
+                  <td id="city"></td>
+                  <td id="vehicle_number"></td>
+                </tr>
+              </tbody>
+            </table>
             <div>
               <p style="margin-bottom:-31px;font-weight: bold;">Vehicle</p><hr>
             </div>
 
-            <div class="row">
-              <div class="col-md-6">
+            <div class="row" id="vehicle_div">
+             <!--  <div class="col-md-6">
                 <div class="form-group">
                   <label for="v_id">Vehicle Id</label>
                   <input type="text" class="form-control" name="vehicle_id" id="v_id">
+                </div>
+              </div> -->
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="vn">Vehicle Number</label>
+                  <input type="text" class="form-control" name="vehicle_number" id="vehicle_number" required>
                 </div>
               </div>
               <div class="col-md-6">
@@ -239,12 +231,7 @@
                   
                 </div>
               </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="vn">Vehicle Number</label>
-                  <input type="text" class="form-control" name="vehicle_number" id="vn" required>
-                </div>
-              </div>
+              
             </div>
             <div>
               <p style="margin-bottom:-31px;font-weight: bold;">Work</p><hr>
@@ -358,5 +345,57 @@
       </div>
     </div>
   </div>
+
+<!-- ==============================Modal for exists customer ======================== -->
+
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#search_name').keyup(function(){
+      var name = $('#search_name').val();
+      $('.for_exists_customer_hide').hide();
+      $('.for_exists_customer_show').show();
+
+      $.ajax({
+        url   :'helper.php',
+        type  :'POST',
+        data  :{name:name},
+        success:function(data){
+          $('.exsits_customer').html(data); 
+        }
+      });
+     
+     if($('#search_name').val() == ''){
+      $('.for_exists_customer_hide').show();
+     }
+    });
+  });
+
+
+  function setCustomerDetails(id){
+
+    cdetail = (document.getElementById(("td"+id).toString()).innerText).split("|");
+ //   console.log(cdetail[9]); 
+
+$datajj = cdetail[10];
+
+    $("#c_id").val(id);
+    $("#name").text(cdetail[0]);
+    $("#email").text(cdetail[1]);
+    $("#phone").text(cdetail[2]);
+    $("#address").text(cdetail[3]);
+    $("#city").text(cdetail[4]+'/'+cdetail[5]);
+    $("#vehicle_number").text(cdetail[9]);
+    alert(query_vehicle
+      );
+
+
+    $('.for_exists_customer_hide').show();
+    $('.for_exists_customer_show').hide();  
+
+  }
+
+</script>
+
 
     <?php include('footer.php'); ?>

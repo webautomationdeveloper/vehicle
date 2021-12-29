@@ -41,31 +41,15 @@
  
 
 <!-----===================Emp Customer Edit ===================---->
+  
   <script type="text/javascript">
     
-    $(document).ready(function(){
-      $('.edit-profile').click(function(){
-        var ed = $(this).data('eid');
-        
-        $.ajax({
-          url:'./helper.php',
-          type:'POST',
-          data:{id:ed},
-          success:function(data){
-            $('#customer_fetch table').html(data);
-          }
-        });
-      $('#edit_customer').modal('show');
-      });
-
-
-//==================Update Edit Customer======================
-      
-
-    });
+   
 
 
   </script>
+
+  
 
 </body>
 

@@ -29,6 +29,12 @@
                 <span class="nav-link-text">Vehicle</span>
               </a>
             </li>
+             <li class="nav-item">
+              <a class="nav-link" href="vehicle.php">
+                <i class="ni ni-pin-3 text-primary"></i>
+                <span class="nav-link-text">Archrive</span>
+              </a>
+            </li>
           </ul>
         </div>
       </div>

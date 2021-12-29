@@ -5,13 +5,8 @@
     <div class="header bg-primary pb-6">
       <div class="container-fluid">
         <div class="header-body">
-         
           <!-- Card stats -->
           <div class="row">
-            
-            
-
-
           </div>
         </div>
       </div>
@@ -101,7 +96,7 @@
   <div class="modal-dialog modal-lg">   
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle">Find Customers</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -109,64 +104,38 @@
       <form method="POST" action="helper.php">
         <div class="modal-body">
           <div>
-            <p style="margin-bottom:-31px;font-weight: bold;">Customer</p><hr>
+            <p style="margin-bottom:-31px;font-weight: bold;">Customer</p>
           </div>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="c_name">Costmer Name</label>
-                <input type="text" class="form-control" name="name" id="name">
+          <div style="margin-left: 50%; margin-bottom: -25px;">   
+            <div class="input-group">
+              <div class="form-outline">
+                <input type="search" name="" class="form-control" placeholder="Search Customer" id="search_name_vehicle_add">
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" name="email" id="email">
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="phone">Phone</label>
-                <input type="number" class="form-control" name="phon" id="phone">
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="address">Address</label>
-                <input type="text" class="form-control" name="address" id="address">
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="city">City</label>
-                <input type="text" class="form-control" name="city" id="city">
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="distic">Distic</label>
-                <input type="text" class="form-control" name="district" id="distic">
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="state">State</label>
-                <input type="text" class="form-control" name="state" id="state">
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="country">Country</label>
-                <input type="text" class="form-control" name="country" id="country">
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="zip">Zip Code</label>
-                <input type="number" class="form-control" name="zip" id="zip">
-                </div>
-              </div>
-            </div>
+          </div><hr>
+          <table class="table v_customer_details">
+          </table>
+          <table class="table vehicle_customer_details" style="display:none;">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>State</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td id="cus_name"></td>
+                <td id="cus_email"></td>
+                <td id="cus_phone"></td>
+                <td id="cus_state"></td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <input type="text" name="cus_id" value="" id="cus_id">
+
             <div>
               <p style="margin-bottom:-31px;font-weight: bold;">Vehicle</p><hr>
             </div>
@@ -204,3 +173,36 @@
   </div>
 
     <?php include('footer.php'); ?>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $('#search_name_vehicle_add').keyup(function(){
+          var c_name = ($(this).val());
+
+          $.ajax({
+            url     :'helper.php',
+            type    :'POST',
+            data    :{c_name:c_name},
+            success :function(data){
+              $('.v_customer_details').html(data);
+            }
+          });
+          if($('#search_name_vehicle_add').val() ==''){
+            $('.v_customer_details').show();
+          }
+        });
+      });
+
+      function setCustomerDetails_v(id){
+        
+        cdetail = (document.getElementById(("tdv"+id).toString()).innerText).split("|");
+        //console.log(cdetail[9]);  
+        $("#cus_id").val(id);
+        $("#cus_name").text(cdetail[0]);
+        $("#cus_email").text(cdetail[1]);
+        $("#cus_phone").text(cdetail[2]);
+        $("#cus_state").text(cdetail[3]);
+        $('.vehicle_customer_details').show();
+        $('.v_customer_details').hide();
+      }
+
+    </script>
