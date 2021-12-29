@@ -100,7 +100,7 @@
                 <tbody>
                   <?php 
 
-                    $sql = "SELECT work_orders.start_date, work_orders.end_date, customers.name, customers.email, vehicle_info.vehicle_no, vehicle_info.vehicle_type_id, work_type.work_name FROM work_orders 
+                    $sql = "SELECT work_orders.id, work_orders.start_date, work_orders.end_date, customers.name, customers.email, vehicle_info.vehicle_no, vehicle_info.vehicle_type_id, work_type.work_name FROM work_orders 
                       JOIN customers ON work_orders.customers_id = customers.id 
                       JOIN vehicle_info ON work_orders.vehicle_info_id = vehicle_info.id 
                       JOIN work_type ON work_orders.work_type_id = work_type.id";
@@ -117,9 +117,16 @@
                             <td><?php echo $row['work_name']; ?></td>
                             <td><?php echo $row['start_date']; ?></td>
                             <td><?php echo $row['end_date']; ?></td>
-                            <td><button class="btn btn-primary">Edit</button></td>
-                            <td><button class="btn btn-danger">Close</button></td>
-                            <td><button class="btn btn-success">Archive</button></td>
+                            <td>
+                              <button class="btn btn-primary">Edit</button></td>
+                            <td>
+                              
+                              <input type="text" name="" class="close_id" data-close_id="<?php echo $row['id']; ?>" value="<?php echo $row['id']; ?>">
+                              
+                              <button id="modal_close" class="btn btn-danger modal_close">Close</button>
+                            </td>
+                            <td>
+                              <button class="btn btn-success">Archive</button></td>
                           </tr>
                         <?php 
                       }
@@ -187,52 +194,9 @@
                 </tr>
               </tbody>
             </table>
-            <div>
-              <p style="margin-bottom:-31px;font-weight: bold;">Vehicle</p><hr>
-            </div>
-
-            <div class="row" id="vehicle_div">
-             <!--  <div class="col-md-6">
-                <div class="form-group">
-                  <label for="v_id">Vehicle Id</label>
-                  <input type="text" class="form-control" name="vehicle_id" id="v_id">
-                </div>
-              </div> -->
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="vn">Vehicle Number</label>
-                  <input type="text" class="form-control" name="vehicle_number" id="vehicle_number" required>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="vehicle">Vehicle</label>
-                  <select class="form-control" id="vehicle" name="vehiclew" required>
-
-                  <?php 
-                    class vehicle extends database{
-                      function sel(){
-                        $sql = "SELECT * FROM vehicle_type";
-                        $query = $this->connect()->query($sql);
-                        if($query->num_rows > 0){
-                          while($row = $query->fetch_assoc()){
-                            ?>
-                            <option value="<?php echo $row['id']; ?>"><?php echo $row['vehicle_name']; ?></option><?php 
-                          }
-                        }else{
-                          echo 'else';
-                        }
-                      }
-                    }
-                    $sel = new vehicle();
-                    $sel->sel();
-                  ?>
-                  </select>
-                  
-                </div>
-              </div>
-              
-            </div>
+            customer Id
+            <input type="text" name="c_id" id="c_id" value="">
+            <input type="text" name="v_id" id="v_id" value="">
             <div>
               <p style="margin-bottom:-31px;font-weight: bold;">Work</p><hr>
             </div>
@@ -289,7 +253,6 @@
                       // $("#setdate").append(date);
                       let workVal = ($("#work").val());
                       workVal = workVal.split("|");
-            
                         
                       switch(workVal[2]){
                         case "0":
@@ -309,7 +272,9 @@
                         let newDate = date1.toISOString().split('T')[0];
                         // $("#setdate").innerHTML("");
                         //$("#setdate").append(newDate);
-                       $("#setdatea").val(newDate);
+                        console.log(newDate);
+                        document.querySelector("#setdatea").value = newDate;
+                       // $("#setdatea").val(newDate);
                       
 
                     })
@@ -320,13 +285,7 @@
               <div class="col-md-3">
                 <div class="form-group">
                   <label for="setdatea">Expiry</label>
-                 <input type="date" class="form-control" id="setdatea" value="" name="setdatea">
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="amount">Amount</label>
-                  <input type="number" class="form-control" name="amount" id="amount">
+                 <input type="date" class="form-control" id="setdatea" value="" name="update_date">
                 </div>
               </div>
               <div class="col-md-6">
@@ -348,6 +307,30 @@
 
 <!-- ==============================Modal for exists customer ======================== -->
 
+<div class="modal fade" id="modal_show_close" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="helper.php">
+          <input type="text" name="work_order_comment">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 
 <script type="text/javascript">
   $(document).ready(function(){
@@ -361,39 +344,37 @@
         type  :'POST',
         data  :{name:name},
         success:function(data){
+          $('.for_exists_customer_hide').show();
           $('.exsits_customer').html(data); 
         }
       });
-     
+
      if($('#search_name').val() == ''){
-      $('.for_exists_customer_hide').show();
+      $('.for_exists_customer_hide').hide();
      }
     });
   });
 
 
   function setCustomerDetails(id){
-
     cdetail = (document.getElementById(("td"+id).toString()).innerText).split("|");
  //   console.log(cdetail[9]); 
 
-$datajj = cdetail[10];
-
-    $("#c_id").val(id);
     $("#name").text(cdetail[0]);
     $("#email").text(cdetail[1]);
     $("#phone").text(cdetail[2]);
     $("#address").text(cdetail[3]);
     $("#city").text(cdetail[4]+'/'+cdetail[5]);
     $("#vehicle_number").text(cdetail[9]);
-    alert(query_vehicle
-      );
-
-
-    $('.for_exists_customer_hide').show();
-    $('.for_exists_customer_show').hide();  
-
+    $('#c_id').val(cdetail[11]);
+    $('#v_id').val(cdetail[12]);
+    $('.exsits_customer').hide();
   }
+
+  $('.modal_close').click(function(){
+    $('#modal_show_close').modal('show');
+    var abc = $(this).data('close_id');
+  });
 
 </script>
 
