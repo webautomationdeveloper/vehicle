@@ -100,10 +100,14 @@
                 <tbody>
                   <?php 
 
+<<<<<<< HEAD
                     $sql = "SELECT work_orders.start_date, work_orders.end_date, work_orders.amount,
                                     customers.name, 
                                     customers.email, 
                                     vehicle_info.vehicle_no, vehicle_info.vehicle_type_id, work_type.work_name FROM work_orders 
+=======
+                    $sql = "SELECT work_orders.id, work_orders.start_date, work_orders.end_date, customers.name, customers.email, vehicle_info.vehicle_no, vehicle_info.vehicle_type_id, work_type.work_name FROM work_orders 
+>>>>>>> be2a8eca915242b90f04c7ecdfbd7f5dae810431
                       JOIN customers ON work_orders.customers_id = customers.id 
                       JOIN vehicle_info ON work_orders.vehicle_info_id = vehicle_info.id 
                       JOIN work_type ON work_orders.work_type_id = work_type.id ORDER BY amount ASC;";
@@ -122,9 +126,21 @@
                             <td><?php echo $row['end_date']; ?>
                             <input type="hidden" value='<?php echo $row['amount'];?>' id="<?php echo $row['vehicle_no']; ?>"></td>
                             <td><?php echo $row['amount'];   ?></td>
+<<<<<<< HEAD
                             <td><button class="btn btn-primary">Edit</button></td>
                             <td><button class="btn btn-danger">Close</button></td>
                             <td><button type="button" class="btn btn-primary" data-toggle="modal" onclick="archieveDate('<?php echo $row['vehicle_no']; ?>')">Archive</button></td>
+=======
+                            <td>
+                              <button class="btn btn-primary">Edit</button>
+                            </td>
+                            <td>
+                              <button class="btn btn-danger">Close</button>
+                            </td>
+                            <td>
+                              <button type="button" class="btn btn-primary" data-toggle="modal" onclick="archieveDate('<?php echo $row['vehicle_no']; ?>')">Archive</button>
+                            </td>
+>>>>>>> be2a8eca915242b90f04c7ecdfbd7f5dae810431
                           </tr>
                         <?php 
                       }
@@ -138,7 +154,12 @@
           </div>
         </div>
       </div>
+<<<<<<< HEAD
 <!-- archieve modal -->
+=======
+
+<!--===================== archieve modal ===========================-->
+>>>>>>> be2a8eca915242b90f04c7ecdfbd7f5dae810431
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -159,7 +180,7 @@
   </div>
 </div>
 
-<!---Add New Work Item Modal -->
+<!---===========================Add New Work Item Modal ===========================-->
 <div class="modal fade bd-example-modal-lg" id="add_new_work_item" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -229,7 +250,11 @@
                         while($row = $query->fetch_assoc()){
                           ?>
                             <option value="<?php echo $row['id'],"|", $row['count'],"|", $row['format'],"|", $row['due_days']; ?>">
+<<<<<<< HEAD
                                         <?php echo $row['work_name'], $row['count'], $row['due_days'];
+=======
+                                        <?php echo $row['work_name'], $row['count'];
+>>>>>>> be2a8eca915242b90f04c7ecdfbd7f5dae810431
                                         ?> days</option>
                               <script>
                                 let count ="<?php echo $row['count'];?>";
@@ -271,7 +296,10 @@
                       // $("#setdate").append(date);
                       let workVal = ($("#work").val());
                       workVal = workVal.split("|");
+<<<<<<< HEAD
                       console.log(workVal);
+=======
+>>>>>>> be2a8eca915242b90f04c7ecdfbd7f5dae810431
                         
                       switch(workVal[2]){
                         case "0":
@@ -326,6 +354,30 @@
 
 <!-- ==============================Modal for exists customer ======================== -->
 
+<div class="modal fade" id="modal_show_close" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="helper.php">
+          <input type="text" name="work_order_comment">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 
 <script type="text/javascript">
   $(document).ready(function(){
@@ -366,12 +418,20 @@
     $('.exsits_customer').hide();
   }
 
+<<<<<<< HEAD
 
 function 	archieveDate(id){
   let dueDate = document.getElementById(id).value;
   console.log(dueDate);
   
 }
+=======
+  $('.modal_close').click(function(){
+    $('#modal_show_close').modal('show');
+    var abc = $(this).data('close_id');
+  });
+
+>>>>>>> be2a8eca915242b90f04c7ecdfbd7f5dae810431
 </script>
 
 

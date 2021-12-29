@@ -68,12 +68,18 @@
                       <td><?php echo $row['city']; ?></td>
                       <td><?php echo $row['district']; ?></td>
                       <td>
+                        
                         <button type="button" class="btn btn-primary edit-profile" data-eid="<?php echo $row['id'];?>" id="emp_custmoer_edit">Edit</button>
                       </td>
                       <td>
                         <input type="text" name="" data-cus_delete_id="<?php echo $row['id'];?>" value="<?php echo $row['id']; ?>">
                       
                         <button type="button" class="btn btn-danger delete_modal" id="delete_modal">Delete</button>
+=======
+
+                        <input type="hidden" name="" value=("<?php echo $row['id']; ?>") id="cus_delete" >
+                      
+                        <button type="button" onclick="deleteFunction('<?php echo $row['id']; ?>')" class="btn btn-danger delete_modal" id="delete_modal">Delete</button>
                       </td>
                   </tr>
               <?php 
@@ -231,7 +237,34 @@
     </div>
   </div>
 
+    <div class="modal fade" id="delete_modal_show" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h2>Are you sure deleted?</h2>
+        <form method="POST" action="helper.php">
+          <input type="hidden" id="customer_delete_id" name="customer_delete_id" value="">
+          <button type="submit" name="customer_delete" class="btn btn-danger">Yes</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+        </form>
+      </div>
+     
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
     <?php include('footer.php'); ?>
+
 
 <script type="text/javascript">
    $(document).ready(function(){
@@ -256,6 +289,11 @@
     });
 
 
+   function deleteFunction(id){
+    $('#delete_modal_show').modal('show');
+    $('#customer_delete_id').val(id);
+  //  alert(id);
+   }
 </script>
 
 

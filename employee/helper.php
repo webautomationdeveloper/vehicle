@@ -2,11 +2,21 @@
 	session_start();
 	include('../helper.php');
 
+	//===================Delete Customer ===========================
+	if(isset($_POST['customer_delete'])){
+		$delete_customer = $_POST['customer_delete_id'];
+		$sql_cus = "DELETE FROM customers WHERE id = $delete_customer";
+		$sql_cus1 = "DELETE FROM vehicle_info WHERE customer_id = $delete_customer";
+		$sql_cus2 = "DELETE FROM work_orders WHERE customers_id = $delete_customer";
 
+		$conn->query($sql_cus);
+		$conn->query($sql_cus1);
+		$conn->query($sql_cus2);
+		header('location:customers.php');
+	}
 
 	//==================New Customer Register=======================
 		if(isset($_POST['customer_register'])){
-
 			$name = $_POST['name'];
 			$email = $_POST['email'];
 			$phon = $_POST['phon'];
@@ -23,11 +33,9 @@
 			if($conn->affected_rows){
 				header('location:customers.php');
 			}
-		
 		}
 
 //==========================Add New Vehicle (Vehicle Page)============================
-
 	if(isset($_POST['vehicle'])){
 		$customer_id = $_POST['cus_id'];
 		$date = date('Y-m-d');
@@ -42,7 +50,6 @@
 	}
 
 	//============================= ----Work Order (Index page)---- ===========================
-
 	if(isset($_POST['work_order'])){
 		$customer_id = $_POST['c_id'];
 		$vehicle_id = $_POST['v_id'];
@@ -57,6 +64,11 @@
 		$sqla = "INSERT INTO work_orders(customers_id, vehicle_info_id, work_type_id, emp_id, start_date, end_date, updated_date,amount) 
 								  VALUES($customer_id, $vehicle_id, $work[0], $emp_id, '$start_date', '$end_date','$updated_date','$due_date')";
 
+	
+		$due_date = date('Y-m-d', strtotime( -$work[3].' day', strtotime($end_date)));
+		
+		$sqla = "INSERT INTO work_orders(customers_id, vehicle_info_id, work_type_id, emp_id, start_date, end_date, updated_date,amount) 
+								  VALUES($customer_id, $vehicle_id, $work[0], $emp_id, '$start_date', '$end_date','$updated_date','$due_date')";
 			$conn->query($sqla);
 			header('location:index.php');
 	}
@@ -236,6 +248,7 @@ if(isset($_POST['name'])){
         	var zip = ($('.ce_zip_update').val());
         	var id = ($('#customer_edit_id').val());
       	
+
         	$.ajax({
         		url 	: 'helper.php',
         		type 	: 'POST',
@@ -271,6 +284,8 @@ if(isset($_POST['name'])){
         $zip = $_POST['zip'];
         $customer_update = "UPDATE customers SET name = '$name', email = '$email', phon = '$phon', address ='$address', city = '$city', district = '$district', state ='$state', zip=$zip WHERE id = $id";
         $c_update_query = $conn->$customer_update;
+        
+        $query4 = $conn->query($customer_update);
 	}
 
 
